@@ -18,6 +18,7 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FIleIO.cpp">
@@ -27,6 +28,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Time.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

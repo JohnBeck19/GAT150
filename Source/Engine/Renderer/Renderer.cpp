@@ -1,5 +1,8 @@
 #include "Renderer.h"
 #include "SDL2-2.28.0/include/SDL_ttf.h"
+#include "SDL2-2.28.0/include/SDL_Image.h"
+#include "Core/Vector2.h"
+#include "Texture.h"
 
 namespace meow
 {
@@ -8,6 +11,7 @@ namespace meow
 	bool Renderer::Initialize()
 	{
 		SDL_Init(SDL_INIT_VIDEO);
+		IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 		TTF_Init();
 
 		return true;
@@ -17,6 +21,7 @@ namespace meow
 		SDL_DestroyRenderer(m_renderer);
 		SDL_DestroyWindow(m_window);
 		TTF_Quit();
+		IMG_Quit();
 	}
 	void Renderer::CreateWindow(const std::string& title, int width, int height)
 	{
@@ -55,4 +60,18 @@ namespace meow
 	{
 		SDL_RenderDrawPointF(m_renderer, x, y);
 	}
+	void Renderer::DrawTexture(Texture* texture, float x, float y, float angle)
+	{
+		meow::vec2 size = texture->GetSize();
+		SDL_Rect dest;
+		dest.x = (int)x;
+		dest.y = (int)y;
+		dest.w = (int)size.x;
+		dest.h = (int)size.y;
+		
+		//https://wiki.libsdl.org/SDL2/SDL_RenderCopyEx
+		SDL_RenderCopyEx(m_renderer, texture->getTexture(), NULL, &dest, angle, NULL, SDL_FLIP_NONE);
+		
+	}
+
 }

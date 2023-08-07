@@ -9,23 +9,24 @@
 #include "Framework/Scene.h"
 #include "Framework/Emitter.h"
 #include "HealthPad.h"
+#include "Framework/SpriteComponent.h"
 
 
 bool SpaceGame::Initialize()
 {
-	m_font = std::make_shared<meow::Font>("space age.ttf", 24);
-	m_ScoreText = std::make_unique<meow::Text>(m_font);
+	
+	m_ScoreText = std::make_unique<meow::Text>(meow::g_resources.Get<meow::Font>("space age.ttf", 24));
 	m_ScoreText->Create(meow::g_renderer, "SCORE: ", meow::Color{ 1, 1, 1, 1 });
 
-	m_TitleText = std::make_unique<meow::Text>(m_font);
+	m_TitleText = std::make_unique<meow::Text>(meow::g_resources.Get<meow::Font>("space age.ttf", 24));
 	m_TitleText->Create(meow::g_renderer, "ASTROIDS", meow::Color{ 1, 1, 1, 1 });
 
-	m_GameOverText = std::make_unique<meow::Text>(m_font);
+	m_GameOverText = std::make_unique<meow::Text>(meow::g_resources.Get<meow::Font>("space age.ttf", 24));
 	m_GameOverText->Create(meow::g_renderer, "Game Over!", meow::Color{ 1, 1, 1, 1 });
 
-	m_LivesText = std::make_unique<meow::Text>(m_font);
+	m_LivesText = std::make_unique<meow::Text>(meow::g_resources.Get<meow::Font>("space age.ttf", 24));
 	
-	m_HealthText = std::make_unique<meow::Text>(m_font);
+	m_HealthText = std::make_unique<meow::Text>(meow::g_resources.Get<meow::Font>("space age.ttf", 24));
 
 	meow::g_audioSystem.AddAudio("Laser", "Laser.wav");
 	meow::g_audioSystem.AddAudio("Explosion", "Explosion.wav");
@@ -63,12 +64,16 @@ void SpaceGame::Update(float dt)
 		m_scene->RemoveAll();
 		m_spawnTime = 3.0f;
 	{
-		
-		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, meow::Pi*1.25, meow::Transform{{ 450,350 }, 0, 3}, meow::g_ModelManager.Get("Ship.txt"));
+		//create player
+		std::unique_ptr<Player> player = std::make_unique<Player>(10.0f, meow::Pi*1.25f, meow::Transform{{ 450,350 }, 0.0f, 3.0f}, meow::g_ModelManager.Get("Ship.txt"));
 		player->m_tag = "Player";
 		player->m_game = this;
 		m_state = eState::Game;
 		m_HealthText->Create(meow::g_renderer, "HEALTH: " + std::to_string(player->getHP()), meow::Color{ 1, 1, 1, 1 });
+		//create components
+		std::unique_ptr<meow::SpriteComponent> component = std::make_unique<meow::SpriteComponent>();
+		component->m_texture = meow::g_resources.Get<meow::Texture>("SpaceShipAsset.png", meow::g_renderer);
+		player->AddComponent(std::move(component));
 		m_scene->Add(std::move(player));
 
 	}
@@ -90,7 +95,7 @@ void SpaceGame::Update(float dt)
 		if (m_HealthPadTimer <= m_HealthPadcd)
 		{
 			m_HealthPadcd = 0;
-			std::unique_ptr<HealthPad> healthpad = std::make_unique<HealthPad>(20, meow::Transform{ {meow::random(meow::g_renderer.GetWidth()),meow::random(meow::g_renderer.GetHeight())}
+			std::unique_ptr<HealthPad> healthpad = std::make_unique<HealthPad>(20.0f, meow::Transform{ {meow::random(meow::g_renderer.GetWidth()),meow::random(meow::g_renderer.GetHeight())}
 				,0,3.0f }, meow::g_ModelManager.Get("healthpad.txt"));
 			healthpad->m_tag = "HealthPad";
 			healthpad->m_game = this;

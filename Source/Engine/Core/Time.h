@@ -32,8 +32,8 @@ namespace meow
 		void SetTimeScale(float t) { m_timeScale = t; }
 
 	private:
-		float m_time;
-		float m_deltaTime;
+		float m_time = 0;
+		float m_deltaTime = 0;
 		float m_timeScale = 1;
 		clock::time_point m_startTime;
 		clock::time_point m_frameTime;

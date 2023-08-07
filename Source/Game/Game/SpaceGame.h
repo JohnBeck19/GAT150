@@ -1,7 +1,7 @@
 #pragma once
 #include "Framework/Game.h"
 #include "Renderer/Text.h"
-
+#include "Framework/ResourceManager.h"
 class SpaceGame : public meow::Game {
 
 public:
@@ -35,7 +35,6 @@ private:
 	float m_stateTimer = 0;
 	float m_HealthPadTimer = 15.0f;
 	float m_HealthPadcd = 0;
-	std::shared_ptr<meow::Font> m_font;
 	std::unique_ptr<meow::Text> m_ScoreText;
 	std::unique_ptr<meow::Text> m_TitleText;
 	std::unique_ptr<meow::Text> m_LivesText;

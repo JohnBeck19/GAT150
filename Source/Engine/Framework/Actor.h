@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "Renderer/Model.h"
+#include "Component.h"
 #include <memory>
 namespace meow {
 	class Actor
@@ -17,6 +18,9 @@ namespace meow {
 
 		virtual void Update(float dt);
 		virtual void Draw(Renderer& renderer);
+
+		void AddComponent(std::unique_ptr<Component> component);
+
 		virtual void onCollision(Actor* other) {};
 
 		float GetRadius() { return (m_model) ? m_model->GetRadius() * m_transform.scale : -10000; }
@@ -34,6 +38,7 @@ namespace meow {
 		friend class Game;
 		class Game* m_game = nullptr;
 	protected:
+		std::vector <std::unique_ptr<Component>> m_components;
 
 		bool m_destroyed = false;
 		vec2 m_velocity;

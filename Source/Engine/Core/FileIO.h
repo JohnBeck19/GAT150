@@ -8,6 +8,8 @@ namespace meow {
 
 	bool fileExists(const std::filesystem::path& path);
 
+	std::string getFileName(const std::filesystem::path& path);
+
 	bool getFileSize(const std::filesystem::path& path, size_t& size);
 	
 	bool readFile(const std::filesystem::path& path, std::string& buffer);

@@ -9,7 +9,7 @@ namespace meow {
 		if (m_data.burst)
 		{
 			m_data.burst = false;
-			for (int i = 0; i < m_data.burstCount; i++)
+			for (unsigned int i = 0; i < m_data.burstCount; i++)
 			{
 				Emit();
 			}

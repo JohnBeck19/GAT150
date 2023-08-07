@@ -9,23 +9,30 @@
 #include "Renderer/ModelManager.h"
 #include "Renderer/Font.h"
 #include "Renderer/Text.h"
+#include "Renderer/Texture.h"
 #include "SpaceGame.h"
-
 #include "Framework/Emitter.h"
 #include "Renderer/Particle.h"
 #include "Renderer/ParticleSystem.h"
+#include "Framework/ResourceManager.h"
 
 #include <iostream>
 #include <chrono>
 #include <vector>
 #include <thread>
+#include <array>
 #include <Framework/Emitter.h>
+#include <map>
 
 using namespace std;
 
 
+
 int main(int argc, char* argv[])
 {
+	
+	INFO_LOG("does it work")
+
 	meow::MemoryTracker::Initialize();
 
 	//input initialization
@@ -50,7 +57,8 @@ int main(int argc, char* argv[])
 	//audio initilization
 	meow::g_audioSystem.Initialize();
 
-
+	// create texture
+	meow::res_t<meow::Texture> texture = meow::g_resources.Get<meow::Texture>("SpaceShipAsset.png",meow::g_renderer);
 
 	unique_ptr<SpaceGame> game = make_unique<SpaceGame>();
 	game->Initialize();
@@ -97,11 +105,12 @@ int main(int argc, char* argv[])
 		meow::g_renderer.SetColor(meow::random(256), meow::random(256), meow::random(256), meow::random(256));
 
 		//draws
+		
 		game->Draw(meow::g_renderer);
 		meow::g_particleSystem.Draw(meow::g_renderer);
 		//text
 		//text->Draw(meow::g_renderer, 450, 100);
-	
+		meow::g_renderer.DrawTexture(texture.get(), 200.0f, 200.0f, 0.0f);
 		
 		
 		//draw
@@ -158,43 +167,4 @@ public:
 	meow::Vector2 m_vel;
 
 };
-*/
-/*
-
-int main()
-{
-	
-	meow::g_memoryTracker.displayInfo();
-	int* p = new int;
-	meow::g_memoryTracker.displayInfo();
-	delete p;
-	meow::g_memoryTracker.displayInfo();
-
-	auto start = std::chrono::high_resolution_clock::now();
-	
-	meow::Time timer;
-	for (int i = 0; i < 1000000; i++)
-	{}
-		cout << timer.GetElapsedNanoseconds() << endl;
-	//cout << meow::getFilePath() << endl;
-	//meow::setFilePath("Assets");
-	//cout << meow::getFilePath() << endl;
-	//size_t size;
-	//meow::getFileSize("game.txt", size);
-	//cout << size << endl;
-
-	//std::string s;
-	//meow::readFile("game.txt", s);
-	//cout << s << endl;
-
-
-	//meow::seedRandom((unsigned int)time(nullptr));
-	//for (int i = 0; i < 3; i++)
-	//{
-	//cout << meow::random(10,20) << endl; 
-	//}
-
-	//
-
-}
 */

@@ -1,4 +1,5 @@
 #pragma once
+#include "Logger.h"
 #include "random.h"
 #include "FileIO.h"
 #include "Memory.h"
@@ -7,3 +8,4 @@
 #include "Vector2.h"
 #include "Transform.h"
 #include "Color.h"
+

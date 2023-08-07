@@ -28,6 +28,9 @@
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
@@ -37,5 +40,6 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
 </Project>

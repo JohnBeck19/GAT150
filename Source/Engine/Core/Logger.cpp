@@ -2,7 +2,6 @@
 #include "FileIO.h"
 namespace meow
 {
-	Logger g_logger(LogLevel::Info, &std::cout, "log.txt");
 
 	bool Logger::Log(LogLevel Loglevel, const std::string& filename, int line)
 	{

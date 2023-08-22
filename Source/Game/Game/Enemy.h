@@ -5,8 +5,8 @@
 class Enemy : public meow::Actor
 {
 public:
-	Enemy(float speed, float turnRate, const meow::Transform& transform, std::shared_ptr<meow::Model> model) :
-		Actor{ transform, model },
+	Enemy(float speed, float turnRate, const meow::Transform& transform) :
+		Actor{ transform},
 		m_speed{ speed },
 		m_turnRate{ turnRate }
 	{

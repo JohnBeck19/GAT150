@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{5c44a938-0b0d-40a4-aa6d-84b12d4f29db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="random.h" />
@@ -19,6 +22,16 @@
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Vector3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix22.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix33.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Json.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FIleIO.cpp">
@@ -31,6 +44,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Json.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

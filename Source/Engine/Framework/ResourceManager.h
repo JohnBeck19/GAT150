@@ -1,12 +1,15 @@
 #pragma once
 #include "Resource.h"
-
+#include "Singleton.h"
 #include <map>
 #include <memory>
 #include <string>
+
+#define GET_RESOURCE(type, filename, ...) meow::ResourceManager::Instance().Get<type>(filename,__VA_ARGS__)
+
 namespace meow
 {
-	class ResourceManager
+	class ResourceManager : public Singleton<ResourceManager>
 	{
 	public:
 		template<typename T, typename ... TArgs>
@@ -33,5 +36,5 @@ namespace meow
 
 		return resource;
 	}
-	extern ResourceManager g_resources;
+	
 }

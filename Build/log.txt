@@ -1,1 +1,5 @@
-Info: main.cpp (34)does it work
+Info: Factory.h (69)Class Registered: TextRenderComponent
+Info: Factory.h (69)Class Registered: SpriteComponent
+Info: Factory.h (69)Class Registered: EnginePhysicsComponent
+Info: Factory.h (69)Class Registered: CircleCollisionComponent
+Info: Factory.h (69)Class Registered: Actor

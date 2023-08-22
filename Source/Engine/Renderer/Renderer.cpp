@@ -4,6 +4,7 @@
 #include "Core/Vector2.h"
 #include "Texture.h"
 
+
 namespace meow
 {
 	Renderer g_renderer;
@@ -64,14 +65,29 @@ namespace meow
 	{
 		meow::vec2 size = texture->GetSize();
 		SDL_Rect dest;
-		dest.x = (int)x;
-		dest.y = (int)y;
+		dest.x = (int)(x-(size.x*0.5f));
+		dest.y = (int)(y -(size.y * 0.5f));
 		dest.w = (int)size.x;
 		dest.h = (int)size.y;
 		
 		//https://wiki.libsdl.org/SDL2/SDL_RenderCopyEx
-		SDL_RenderCopyEx(m_renderer, texture->getTexture(), NULL, &dest, angle, NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(m_renderer, texture->getTexture(), nullptr, &dest, angle, nullptr, SDL_FLIP_NONE);
 		
 	}
+	void Renderer::DrawTexture(Texture* texture, const Transform& transform)
+	{
 
+		mat3 mx = transform.GetMatrix();
+		vec2 position = mx.GetTranslation();
+		meow::vec2 size = texture->GetSize() * mx.GetScale();
+		SDL_Rect dest;
+		dest.x = (int)(position.x - (size.x * 0.5f));
+		dest.y = (int)(position.y - (size.y * 0.5f));
+		dest.w = (int)size.x;
+		dest.h = (int)size.y;
+
+		//https://wiki.libsdl.org/SDL2/SDL_RenderCopyEx
+		SDL_RenderCopyEx(m_renderer, texture->getTexture(), NULL, &dest, mx.GetRotation(), NULL, SDL_FLIP_NONE);
+		
+	}
 }

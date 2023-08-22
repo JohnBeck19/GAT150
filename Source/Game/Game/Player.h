@@ -1,16 +1,17 @@
 #pragma once
 #include "Framework/Actor.h"
-
+#include "Framework/PhysicsComponent.h"
 class Player : public meow::Actor
 {
 public:
-	Player(float speed, float turnRate, const meow::Transform& transform, const std::shared_ptr<meow::Model> model) :
-		Actor{ transform, model },
+	Player(float speed, float turnRate, const meow::Transform& transform) :
+		Actor{ transform },
 		m_speed{ speed },
 		m_turnRate{ turnRate }
 	{
-	m_id = "Player";
+	id = "Player";
 	}
+	bool Initialize() override;
 	void Update(float dt) override;
 	void onCollision(Actor* actor) override;
 	int getHP() { return (int)m_health; }
@@ -25,4 +26,6 @@ private:
 	int m_burst = 3;
 	bool m_burstbool = false;
 	float m_burstdelay = .10f;
+
+	meow::PhysicsComponent* m_physicsComponent = nullptr;
 };

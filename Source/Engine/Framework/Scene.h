@@ -11,14 +11,20 @@ namespace meow
 	{
 	public:
 		Scene() = default;
+		bool Initialize();
 		void Update(float dt);
 		void Draw(Renderer& renderer);
 		
 		void Add(std::unique_ptr<Actor> actor);
-		void RemoveAll();
+		void RemoveAll(bool force);
+
+		bool Load(const std::string& filename);
+		bool Read(const json_t& value);
 
 		template<typename T>
 		T* GetActor();
+		template<typename T = Actor>
+		T* GetActorByName(const std::string& name);
 
 		friend class Actor;
 		
@@ -40,5 +46,16 @@ namespace meow
 		}
 		return nullptr;
 	}
-
+	template<typename T>
+	inline T* meow::Scene::GetActorByName(const std::string& name)
+	{
+		for (auto& actor : m_actors)
+		{	
+			if (actor->name == name) {
+				T* result = dynamic_cast<T*>(actor.get());
+				if (result) return result;
+			}
+		}
+		return nullptr;
+	}
 }

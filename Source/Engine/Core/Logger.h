@@ -1,14 +1,15 @@
 #pragma once
+#include "Framework/Singleton.h"
 #include <string>
 #include <cassert>
 #include <fstream>
 #include <iostream>
 
 #ifdef _DEBUG
-#define INFO_LOG(msg)		{ if (meow::g_logger.Log(meow::LogLevel::Info,__FILE__, __LINE__))		{meow::g_logger << msg << "\n";}}
-#define WARNING_LOG(msg)	{ if (meow::g_logger.Log(meow::LogLevel::Warning,__FILE__, __LINE__))	{meow::g_logger << msg << "\n";}}
-#define ERROR_LOG(msg)		{ if (meow::g_logger.Log(meow::LogLevel::Error,__FILE__, __LINE__))		{meow::g_logger << msg << "\n";}}
-#define ASSERT_LOG(condition, msg) { if ( !condition && meow::g_logger.Log(meow::LogLevel::Assert,__FILE__, __LINE__))	{meow::g_logger << msg << "\n";} assert(condition); }
+#define INFO_LOG(msg)		{ if (meow::Logger::Instance().Log(meow::LogLevel::Info,__FILE__, __LINE__))		{meow::Logger::Instance() << msg << "\n";}}
+#define WARNING_LOG(msg)	{ if (meow::Logger::Instance().Log(meow::LogLevel::Warning,__FILE__, __LINE__))	{meow::Logger::Instance()<< msg << "\n";}}
+#define ERROR_LOG(msg)		{ if (meow::Logger::Instance().Log(meow::LogLevel::Error,__FILE__, __LINE__))		{meow::Logger::Instance() << msg << "\n";}}
+#define ASSERT_LOG(condition, msg) { if ( !condition && meow::Logger::Instance().Log(meow::LogLevel::Assert,__FILE__, __LINE__))	{meow::Logger::Instance() << msg << "\n";} assert(condition); }
 #else
 #define INFO_LOG(msg) {}
 #define WARNING_LOG(msg) {}
@@ -28,10 +29,10 @@ namespace meow
 		Error,
 		Assert
 	};
-	class Logger 
+	class Logger : public Singleton<Logger>
 	{
 	public:
-		Logger(LogLevel Loglevel, std::ostream* ostream, const std::string& filename = "") :
+		Logger(LogLevel Loglevel = LogLevel::Info, std::ostream* ostream = &std::cout, const std::string& filename = "Log.txt") :
 			m_Loglevel{Loglevel},
 			m_ostream{ ostream }
 		{
@@ -49,7 +50,6 @@ namespace meow
 		std::ofstream m_fstream;
 	
 	};
-	extern Logger g_logger;
 
 	template<typename T>
 	inline Logger& Logger::operator<<(T value)

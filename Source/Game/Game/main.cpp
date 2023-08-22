@@ -1,28 +1,29 @@
 #include "Input/InputSystem.h"
-#include "Core/Core.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "SpaceGame.h"
+#include "Core/Core.h"
 #include "Audio/AudioSystem.h"
 #include"Renderer/Renderer.h"
-#include "Framework/Actor.h"
-#include "Framework/Scene.h"
 #include "Renderer/ModelManager.h"
 #include "Renderer/Font.h"
 #include "Renderer/Text.h"
 #include "Renderer/Texture.h"
-#include "SpaceGame.h"
-#include "Framework/Emitter.h"
+
 #include "Renderer/Particle.h"
 #include "Renderer/ParticleSystem.h"
-#include "Framework/ResourceManager.h"
+#include "Framework/Framework.h"
+#include "Framework/Emitter.h"
+
+#include "Physics/PhysicsSystem.h"
 
 #include <iostream>
 #include <chrono>
 #include <vector>
 #include <thread>
 #include <array>
-#include <Framework/Emitter.h>
 #include <map>
+
 
 using namespace std;
 
@@ -30,19 +31,25 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	
-	INFO_LOG("does it work")
+	//meow::Factory::Instance().Register<meow::SpriteComponent>("SpriteComponent");
+
 
 	meow::MemoryTracker::Initialize();
+	meow::seedRandom((unsigned int)time(nullptr));
+	meow::setFilePath("assets");
+	
 
 	//input initialization
 	meow::g_inputSystem.Initialize();
 
-	
+	//physiscs system
+	meow::PhysicsSystem::Instance().Initialize();
+
+
 	//seed randomization
-	meow::seedRandom((unsigned int)time(nullptr));
+	//meow::seedRandom((unsigned int)time(nullptr));
 	//file path
-	meow::setFilePath("assets");
+	//meow::setFilePath("assets");
 
 	//renderer initilization 
 	
@@ -57,9 +64,7 @@ int main(int argc, char* argv[])
 	//audio initilization
 	meow::g_audioSystem.Initialize();
 
-	// create texture
-	meow::res_t<meow::Texture> texture = meow::g_resources.Get<meow::Texture>("SpaceShipAsset.png",meow::g_renderer);
-
+	
 	unique_ptr<SpaceGame> game = make_unique<SpaceGame>();
 	game->Initialize();
 
@@ -110,7 +115,6 @@ int main(int argc, char* argv[])
 		meow::g_particleSystem.Draw(meow::g_renderer);
 		//text
 		//text->Draw(meow::g_renderer, 450, 100);
-		meow::g_renderer.DrawTexture(texture.get(), 200.0f, 200.0f, 0.0f);
 		
 		
 		//draw

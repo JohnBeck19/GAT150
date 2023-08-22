@@ -1,12 +1,30 @@
 #include "Player.h"
 #include "Input/InputSystem.h"
-#include "Framework/Scene.h"
 #include "Bullet.h"
 #include "SpaceGame.h"
-#include "Framework/Emitter.h"
 #include "Renderer/ModelManager.h"
 #include "HealthPad.h"
 #include "Audio/AudioSystem.h"
+#include "Framework/Framework.h"
+
+
+bool Player::Initialize()
+{
+	Actor::Initialize();
+	m_physicsComponent = GetComponent<meow::PhysicsComponent>();
+	auto CollisionComponent = GetComponent<meow::CollisionComponent>();
+	if (CollisionComponent) {
+		auto renderComponent = GetComponent<meow::RenderComponent>();
+		if (renderComponent) {
+
+			float scale = transform.scale;
+			CollisionComponent->m_radius = renderComponent->GetRadius();
+		}
+	}
+	
+	return true;
+}
+
 void Player::Update(float dt)
 {
 	Actor::Update(dt);
@@ -14,32 +32,49 @@ void Player::Update(float dt)
 	float rotate = 0;
 	if (meow::g_inputSystem.GetKeyDown(SDL_SCANCODE_A)) rotate = -1;
 	if (meow::g_inputSystem.GetKeyDown(SDL_SCANCODE_D)) rotate = 1;
-	m_transform.rotation += rotate * m_turnRate * dt;
+	transform.rotation += rotate * m_turnRate * dt;
 
 	float thrust = 0;
 	if (meow::g_inputSystem.GetKeyDown(SDL_SCANCODE_W)) thrust = 1;
 
-	meow::Vector2 forward = meow::vec2{ 0,-1 }.Rotate(m_transform.rotation);
-	AddForce(forward * m_speed * thrust);
-	SetDamping(0.95f);
-	//m_transform.position += forward * m_speed * thrust * dt;
-	m_transform.position.x = meow::Wrap(m_transform.position.x, (float)meow::g_renderer.GetWidth());
-	m_transform.position.y = meow::Wrap(m_transform.position.y, (float)meow::g_renderer.GetHeight());
+	meow::Vector2 forward = meow::vec2{ 0,-1 }.Rotate(transform.rotation);
+	
 
+	m_physicsComponent->ApplyForce(forward * m_speed * thrust);
+
+	//m_transform.position += forward * m_speed * thrust * dt;
+	transform.position.x = meow::Wrap(transform.position.x, (float)meow::g_renderer.GetWidth());
+	transform.position.y = meow::Wrap(transform.position.y, (float)meow::g_renderer.GetHeight());
 
 	//fire
 
 	if (meow::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !meow::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE))
 	{
-		meow::Transform transform1{ m_transform.position,m_transform.rotation + meow::DegToRad(10),1 };
-		std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>(400.0f, transform1, meow::g_ModelManager.Get("bullet2.txt"));
-		bullet->m_tag = "Player";
+		meow::Transform transform1{ transform.position,transform.rotation + meow::DegToRad(10),1 };
+		std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>(400.0f, transform1);
+		bullet->tag = "Player";
+		std::unique_ptr<meow::SpriteComponent> component = std::make_unique<meow::SpriteComponent>();
+		component->m_texture = GET_RESOURCE(meow::Texture, "Rocket.png", meow::g_renderer);
+		bullet->AddComponent(std::move(component));
+
+		auto CollisionComponent = std::make_unique<meow::CircleCollisionComponent>();
+		bullet->AddComponent(std::move(CollisionComponent));
+
+		bullet->Initialize();
 		m_scene->Add(std::move(bullet));
 
 
-		meow::Transform transform2{ m_transform.position,m_transform.rotation + meow::DegToRad(-10),1 };
-		bullet = std::make_unique<Bullet>(400.0f, transform2, meow::g_ModelManager.Get("bullet2.txt"));
-		bullet->m_tag = "Player";
+		meow::Transform transform2{ transform.position,transform.rotation + meow::DegToRad(-10),1 };
+		bullet = std::make_unique<Bullet>(400.0f, transform2);
+		component = std::make_unique<meow::SpriteComponent>();
+		component->m_texture = GET_RESOURCE(meow::Texture, "Rocket.png", meow::g_renderer);
+		bullet->AddComponent(std::move(component));
+
+		CollisionComponent = std::make_unique<meow::CircleCollisionComponent>();
+		bullet->AddComponent(std::move(CollisionComponent));
+
+		bullet->Initialize();
+		bullet->tag = "Player";
 		m_scene->Add(std::move(bullet));
 	}
 	if (meow::g_inputSystem.GetKeyDown(SDL_SCANCODE_T)) meow::g_Time.SetTimeScale(0.25f);
@@ -62,9 +97,17 @@ void Player::Update(float dt)
 			//creates the bullets
 			for (int i = 0; i < 20; i++)
 			{																			//adding the m_burst for slight rotation offset
-				meow::Transform transform2{ m_transform.position,m_transform.rotation + meow::DegToRad((float)i * 18+(m_burst*5)),10 };
-				super = std::make_unique<Bullet>(400.0f, transform2, meow::g_ModelManager.Get("super.txt"));
-				super->m_tag = "Player";
+				meow::Transform transform2{ transform.position,transform.rotation + meow::DegToRad((float)i * 18+(m_burst*5)),.5f };
+				super = std::make_unique<Bullet>(400.0f, transform2);
+				super->tag = "Player";
+				std::unique_ptr<meow::SpriteComponent> component = std::make_unique<meow::SpriteComponent>();
+				component->m_texture = GET_RESOURCE(meow::Texture, "Rocket.png", meow::g_renderer);
+				super->AddComponent(std::move(component));
+
+				auto CollisionComponent = std::make_unique<meow::CircleCollisionComponent>();
+				super->AddComponent(std::move(CollisionComponent));
+
+				super->Initialize();
 				m_scene->Add(std::move(super));
 			}
 			meow::g_audioSystem.PlayOneShot("Laser");
@@ -77,7 +120,7 @@ void Player::Update(float dt)
 
 void Player::onCollision(Actor* other)
 {
-	if (other->m_tag != m_tag && other->m_id == "bullet") {
+	if (other->tag != tag && other->id == "bullet") {
 		m_health -= 1;
 		dynamic_cast<SpaceGame*>(m_game)->m_HealthText->Create(meow::g_renderer, "HEALTH: " + std::to_string(this->getHP()), meow::Color{ 1, 1, 1, 1 });
 		meow::g_audioSystem.PlayOneShot("Explosion");
@@ -93,8 +136,8 @@ void Player::onCollision(Actor* other)
 		pInfo.speedMax = 150;
 		pInfo.damping = 0.25f;
 		pInfo.color = meow::Color{ 255,0,0,1 };
-		auto emitter = std::make_unique<meow::Emitter>(m_transform, pInfo);
-		emitter->m_lifespan = 0.5f;
+		auto emitter = std::make_unique<meow::Emitter>(transform, pInfo);
+		emitter->lifespan = 0.5f;
 		m_scene->Add(std::move(emitter));
 	}
 	if (m_health <= 0) {
@@ -102,7 +145,7 @@ void Player::onCollision(Actor* other)
 		dynamic_cast<SpaceGame*>(m_game)->SetState(SpaceGame::eState::PlayerDeadStart);
 		m_destroyed = true;
 	}
-	if (other->m_tag == "HealthPad") {
+	if (other->tag == "HealthPad") {
 		m_health = dynamic_cast<HealthPad*>(other)->getHealthAmount();
 		if (m_health < m_maxHealth) {
 			m_health = m_maxHealth;

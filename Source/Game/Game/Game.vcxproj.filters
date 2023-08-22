@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{05c83fda-5397-4384-94e0-e1e8c7d87e62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,5 +35,10 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="SpaceGame.h" />
     <ClInclude Include="HealthPad.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\Build\Assets\scene.json">
+      <Filter>resources</Filter>
+    </Text>
   </ItemGroup>
 </Project>

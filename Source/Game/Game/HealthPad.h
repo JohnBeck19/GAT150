@@ -4,8 +4,8 @@
 class HealthPad : public meow::Actor
 {
 public:
-	HealthPad(float HPAmount, const meow::Transform& transform, const std::shared_ptr<meow::Model> model) :
-		Actor{ transform, model },
+	HealthPad(float HPAmount, const meow::Transform& transform) :
+		Actor{ transform},
 		m_HPAmount{ HPAmount}
 	{}
 	void Update(float dt) override;

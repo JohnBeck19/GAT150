@@ -1,24 +1,58 @@
 #include "Actor.h"
 #include "RenderComponent.h"
 
+meow::CLASS_DEFINITION(Actor)
+
+meow::Actor::Actor(const Actor& other)
+{
+	name = other.name;
+	tag = other.tag;
+	lifespan = other.lifespan;
+	transform = other.transform;
+	m_scene = other.m_scene;
+	m_game = other.m_game;
+}
+
+bool meow::Actor::Initialize()
+{
+	for (auto& component : m_components)
+	{
+		component->Initialize();
+	}
+
+	return true;
+}
+
+void meow::Actor::OnDestroy()
+{
+	for (auto& component : m_components)
+	{
+		component->OnDestroy();
+	}
+}
+
 void meow::Actor::Update(float dt)
 {
-	if (m_lifespan != -1.0f) {
-		m_lifespan -= dt;
-		m_destroyed = (m_lifespan <= 0);
+	if (lifespan != -1.0f) {
+		lifespan -= dt;
+		m_destroyed = (lifespan <= 0);
 		
 	}
-	m_transform.position += m_velocity * dt;
-	m_velocity *= std::pow(1.0f - m_damping, dt);
+
+	for (auto& component : m_components)
+	{
+		component->Update(dt);
+	}
 }
 
 void meow::Actor::Draw(meow::Renderer& renderer)
 {
-	//m_model->Draw(renderer, m_transform);
+	
 	for (auto& component : m_components) {
-		if (dynamic_cast<RenderComponent*>(component.get()))
+		RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component.get());
+		if (renderComponent)
 		{
-			dynamic_cast<RenderComponent*>(component.get())->Draw(renderer);
+			renderComponent->Draw(renderer);
 		}
 	}
 
@@ -28,4 +62,30 @@ void meow::Actor::AddComponent(std::unique_ptr<meow::Component> component)
 {
 	component->m_owner = this;
 	m_components.push_back(std::move(component));
+}
+
+void meow::Actor::Read(const json_t& value)
+{
+	Object::Read(value);
+
+	READ_DATA(value, tag);
+	READ_DATA(value, lifespan);
+	READ_DATA(value, persistent);
+	READ_DATA(value, prototype);
+
+	if (HAS_DATA(value, transform)) transform.Read(GET_DATA(value,transform));
+
+	if (HAS_DATA(value, components) && GET_DATA(value, components).IsArray()) {
+		for (auto& componentValue : GET_DATA(value, components).GetArray())
+		{
+			std::string type;
+			READ_DATA(componentValue, type);
+
+			auto component = CREATE_CLASS_BASE(Component,type);
+			component->Read(componentValue);
+
+			AddComponent(std::move(component));
+		}
+	}
+
 }

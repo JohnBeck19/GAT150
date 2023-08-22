@@ -148,21 +148,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="CircleCollisionComponent.h" />
+    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Emitter.h" />
+    <ClInclude Include="EnginePhysicsComponent.h" />
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="Framework.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="ModelRendererComponent.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="TextRenderComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="CircleCollisionComponent.cpp" />
     <ClCompile Include="Emitter.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="EnginePhysicsComponent.cpp" />
+    <ClCompile Include="ModelRendererComponent.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="TextRenderComponent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

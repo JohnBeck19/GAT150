@@ -14,7 +14,7 @@ namespace meow
 		bool Load(const std::string& filename, class Renderer& renderer);
 		vec2 GetSize();
 
-		friend class renderer;
+		friend class Renderer;
 		SDL_Texture* getTexture() { return m_texture; };
 	private:
 		SDL_Texture* m_texture = nullptr;

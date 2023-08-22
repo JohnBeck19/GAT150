@@ -6,18 +6,22 @@ void Bullet::Update(float dt)
 {
 	Actor::Update(dt);
 
-	meow::Vector2 forward = meow::vec2{ 0,-1 }.Rotate(m_transform.rotation);
-	m_transform.position += forward * m_speed * 1 * dt;
-	if (m_tag != "Player") {
-		m_transform.position.x = meow::Wrap(m_transform.position.x, (float)meow::g_renderer.GetWidth());
-		m_transform.position.y = meow::Wrap(m_transform.position.y, (float)meow::g_renderer.GetHeight());
+	meow::Vector2 forward = meow::vec2{ 0,-1 }.Rotate(transform.rotation);
+	transform.position += forward * m_speed * 1 * dt;
+	if (tag != "Player") {
+		transform.position.x = meow::Wrap(transform.position.x, (float)meow::g_renderer.GetWidth());
+		transform.position.y = meow::Wrap(transform.position.y, (float)meow::g_renderer.GetHeight());
 	}
+}
+bool Bullet::Initialize()
+{
+	return false;
 }
 void Bullet::onCollision(Actor* other)
 {
 
 
-	if (other->m_tag != m_tag) {
+	if (other->tag != tag) {
 		m_destroyed = true;
 	}
 }

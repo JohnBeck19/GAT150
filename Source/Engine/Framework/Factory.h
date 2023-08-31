@@ -8,8 +8,8 @@
 
 
 #define CREATE_CLASS(classname) meow::Factory::Instance().Create<meow::classname>(#classname)
-#define CREATE_CLASS_BASE(classbase, classname) meow::Factory::Instance().Create<meow::classbase>(#classname)
-#define INSTANTIATE(classbase,classname) meow::Factory::Instance().Create<meow::classbase>(#classname)
+#define CREATE_CLASS_BASE(classbase, classname) meow::Factory::Instance().Create<meow::classbase>(classname)
+#define INSTANTIATE(classbase,classname) meow::Factory::Instance().Create<meow::classbase>(classname)
 namespace meow
 {
 	class CreatorBase {

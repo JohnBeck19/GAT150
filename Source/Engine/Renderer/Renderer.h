@@ -2,6 +2,7 @@
 #include <string>
 #include <SDL2-2.28.0/include/SDL.h>
 #include "Core/Transform.h"
+#include "Core/MathRect.h"
 namespace meow
 {
 
@@ -31,6 +32,7 @@ namespace meow
 
 		void DrawTexture(class Texture* texture, float x, float y, float angle = 0.0f);
 		void DrawTexture(class Texture* texture, const Transform& transform);
+		void DrawTexture(class Texture* texture, const MathRect& source, const Transform& transform);
 		friend class Text;
 		friend class Texture;
 	private:

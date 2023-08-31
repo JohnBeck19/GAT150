@@ -13,6 +13,9 @@ namespace meow {
 		Color() : r{ 0 }, g{ 0 }, b{ 0 }, a{ 0 } {}
 		Color(float r, float g, float b, float a) : r{ r }, g{ g }, b{ b }, a{ a } {}
 
+		float operator [] (size_t index) const { return (&r)[index]; }
+		float& operator[] (size_t index) { return (&r)[index]; }
+
 		static uint8_t ToInt(float c) { return uint8_t(Clamp(c, 0.0f, 1.0f) * 255); }
 	};
 

@@ -38,11 +38,11 @@ namespace meow
 	}
 	vec2 Texture::GetSize()
 	{
-		ASSERT_LOG(m_texture, "Texture is Not Null")
+		//ASSERT_LOG(m_texture, "Texture is Not Null")
 		SDL_Point point;
 		
 		// https://wiki.libsdl.org/SDL2/SDL_QueryTexture
-		SDL_QueryTexture(m_texture, NULL,NULL, &point.x,&point.y);
+ 		SDL_QueryTexture(m_texture, NULL,NULL, &point.x,&point.y);
 		return vec2{ point.x, point.y };
 	}
 }

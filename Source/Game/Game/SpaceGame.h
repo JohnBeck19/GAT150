@@ -1,8 +1,9 @@
 #pragma once
 #include "Framework/Game.h"
+#include "Framework/EventManager.h"
 #include "Renderer/Text.h"
 #include "Framework/ResourceManager.h"
-class SpaceGame : public meow::Game {
+class SpaceGame : public meow::Game, meow::IEventListener {
 
 public:
 	enum class eState
@@ -27,14 +28,17 @@ public:
 
 	void SetState(eState state) { m_state = state; }
 
+	void OnAddPoints(const meow::Event& event);
+	void OnPlayerDead(const meow::Event& event); 
 	std::unique_ptr<meow::Text> m_HealthText;
 private:
 	eState m_state = eState::Title;
 	float m_spawnTimer = 0;
 	float m_spawnTime = 3.0f;
 	float m_stateTimer = 0;
-	float m_HealthPadTimer = 15.0f;
+	float m_HealthPadTimer = 10.0f;
 	float m_HealthPadcd = 0;
+	int enemyCounter = 0;
 	std::unique_ptr<meow::Text> m_ScoreText;
 	std::unique_ptr<meow::Text> m_TitleText;
 	std::unique_ptr<meow::Text> m_LivesText;

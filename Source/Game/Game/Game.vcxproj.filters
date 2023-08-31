@@ -37,8 +37,8 @@
     <ClInclude Include="HealthPad.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\Build\Assets\scene.json">
+    <None Include="..\..\..\Build\Assets\json\scene.json">
       <Filter>resources</Filter>
-    </Text>
+    </None>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include "RenderComponent.h"
 #include "Renderer/Texture.h"
 #include "Framework/Factory.h"
+#include "Core/MathRect.h"
 namespace meow {
 	class SpriteComponent : public RenderComponent
 	{
@@ -16,6 +17,7 @@ namespace meow {
 
 
 	public:
+		MathRect source;
 		std::string textureName;
 		res_t<Texture> m_texture;
 	};

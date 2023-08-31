@@ -1,5 +1,23 @@
+Info: Factory.h (69)Class Registered: Bullet
+Info: Factory.h (69)Class Registered: Enemy
+Info: Factory.h (69)Class Registered: HealthPad
+Info: Factory.h (69)Class Registered: Player
 Info: Factory.h (69)Class Registered: TextRenderComponent
 Info: Factory.h (69)Class Registered: SpriteComponent
+Info: Factory.h (69)Class Registered: SpriteAnimComponent
 Info: Factory.h (69)Class Registered: EnginePhysicsComponent
 Info: Factory.h (69)Class Registered: CircleCollisionComponent
+Info: Factory.h (69)Class Registered: Box2DPhysicsComponent
+Info: Factory.h (69)Class Registered: Box2DCollisionComponent
 Info: Factory.h (69)Class Registered: Actor
+Info: Factory.h (76)Class Registered: Bullet
+Info: Factory.h (76)Class Registered: HealthPad
+Info: Factory.h (76)Class Registered: Enemy
+Info: Factory.h (76)Class Registered: EnemyBullet
+Info: Player.cpp (40)30a
+Info: Factory.h (76)Class Registered: Player
+Info: EventManager.cpp (13)EVent SubscribedAddPoints
+Info: EventManager.cpp (13)EVent SubscribedOnPlayerDead
+Info: Player.cpp (197)5
+Info: Player.cpp (197)5
+Info: Player.cpp (197)5

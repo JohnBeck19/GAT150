@@ -20,9 +20,10 @@ namespace meow
 		std::string text;
 		std::string fontName;
 		int fontSize = 0;
-
-	private:
+		Color color{1,1,1,1};
 		bool m_changed = true;
+	private:
+		
 		std::unique_ptr<Text> m_text;
 	};
 }

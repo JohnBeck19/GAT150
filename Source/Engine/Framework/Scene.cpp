@@ -1,6 +1,6 @@
 #include "Scene.h"
 #include "CircleCollisionComponent.h"
-
+#include "Core/Logger.h"
 
 namespace meow {
 	bool Scene::Initialize()
@@ -14,10 +14,11 @@ namespace meow {
 		auto iter = m_actors.begin();
 		while (iter != m_actors.end()) {
 			if((*iter)->active) (*iter)->Update(dt);
-			((*iter)->m_destroyed) ? iter = m_actors.erase(iter) : iter++;
+			((*iter)->destroyed) ? iter = m_actors.erase(iter) : iter++;
 		
 		}
 		//check collision 
+		/*
 		for (auto iter1 = m_actors.begin(); iter1 != m_actors.end(); iter1++) {
 			
 			for (auto iter2 = std::next(iter1, 1); iter2 != m_actors.end(); iter2++	) {
@@ -28,12 +29,12 @@ namespace meow {
 				if (collision1 == nullptr || collision2 == nullptr) continue;
 				if (collision1->CheckCollision(collision2))
 				{
-					(*iter1)->onCollision(iter2->get());
-					(*iter2)->onCollision(iter1->get());
+					(*iter1)->OnCollision(iter2->get());
+					(*iter2)->OnCollision(iter1->get());
 				}
 			}
 		}
-
+		*/
 	}
 
 	void meow::Scene::Draw(Renderer& renderer)
@@ -55,10 +56,9 @@ namespace meow {
 		auto iter = m_actors.begin();
 		while (iter != m_actors.end()) 
 		{
-			(force || (!(*iter)->persistent) ? iter = m_actors.erase(iter) : iter++);
+			(force || !((*iter)->persistent)) ? iter = m_actors.erase(iter) : iter++;
 
 		}
-		m_actors.clear();
 	}
 	bool Scene::Load(const std::string& filename)
 	{
@@ -68,11 +68,11 @@ namespace meow {
 			return false;
 		}
 		Read(document);
-		return true;
+		return true;	
 	}
 	bool Scene::Read(const json_t& value) {
 
-		if (HAS_DATA(value, actors) && GET_DATA(value, actors).IsArray()) 
+ 		if (HAS_DATA(value, actors) && GET_DATA(value, actors).IsArray()) 
 		{
 			for (auto& actorValue : GET_DATA(value, actors).GetArray())
 			{

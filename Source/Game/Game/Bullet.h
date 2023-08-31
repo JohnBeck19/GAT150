@@ -1,20 +1,20 @@
 #pragma once
 #include "Framework/Actor.h"
-class Bullet : public meow::Actor
-{
-public:
-	Bullet(float speed, const meow::Transform& transform) :
-		Actor{ transform},
-		m_speed{ speed }
+#include "Framework/PhysicsComponent.h"
+namespace meow {
+	class Bullet : public meow::Actor
 	{
-		lifespan = 2.0f; 
-		id = "bullet";
-	}
-	void onCollision(Actor* other) override;
-	void Update(float dt) override;
-	bool Initialize() override;
-		
-private:
-	float m_speed = 0;
+	public:
 
-};
+		CLASS_DECLARATION(Bullet)
+
+		void OnCollisionEnter(Actor* other) override;
+		void Update(float dt) override;
+		bool Initialize() override;
+
+	private:
+		float speed = 0;
+		meow::PhysicsComponent* m_physicsComponent = nullptr;
+	};
+
+}

@@ -3,6 +3,8 @@
 #include "rapidjson/include/rapidjson/istreamwrapper.h"
 #include <sstream>
 #include "FileIO.h"
+#include "Color.h"
+#include "MathRect.h"
 namespace meow
 {
 	bool Json::Load(const std::string& filename, rapidjson::Document& document)
@@ -69,7 +71,6 @@ namespace meow
 		// check if 'name' member exists and is an array with 2 elements
 		if (!value.HasMember(name.c_str()) || !value[name.c_str()].IsArray() || value[name.c_str()].Size() != 2)
 		{
-			INFO_LOG(" Size of the array ",value[name.c_str()].Size())
 	
 			if (required) ERROR_LOG("Cannot read required json data: " << name.c_str());
 			return false;
@@ -88,5 +89,53 @@ namespace meow
 		}
 		return true;
 	
+	}
+	bool Json::Read(const rapidjson::Value& value, const std::string& name, Color& data, bool required)
+	{
+		// check if 'name' member exists and is an array with 2 elements
+		if (!value.HasMember(name.c_str()) || !value[name.c_str()].IsArray() || value[name.c_str()].Size() != 4)
+		{
+
+				if (required) ERROR_LOG("Cannot read required json data: " << name.c_str());
+			return false;
+		}
+		// create json array object
+		auto& array = value[name.c_str()];
+		// get array values
+		for (rapidjson::SizeType i = 0; i < array.Size(); i++)
+		{
+			if (!array[i].IsNumber())
+			{
+				ERROR_LOG("Invalid json data type: " << name.c_str());
+				return false;
+			}
+			data[i] = array[i].GetFloat();
+		}
+		return true;
+
+	}
+	bool Json::Read(const rapidjson::Value& value, const std::string& name, MathRect& data, bool required)
+	{
+		// check if 'name' member exists and is an array with 2 elements
+		if (!value.HasMember(name.c_str()) || !value[name.c_str()].IsArray() || value[name.c_str()].Size() != 4)
+		{
+
+				if (required) ERROR_LOG("Cannot read required json data: " << name.c_str());
+			return false;
+		}
+		// create json array object
+		auto& array = value[name.c_str()];
+		// get array values
+		for (rapidjson::SizeType i = 0; i < array.Size(); i++)
+		{
+			if (!array[i].IsNumber())
+			{
+				ERROR_LOG("Invalid json data type: " << name.c_str());
+				return false;
+			}
+			data[i] = array[i].GetFloat();
+		}
+		return true;
+
 	}
 }

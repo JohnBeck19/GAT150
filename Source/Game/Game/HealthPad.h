@@ -1,18 +1,21 @@
 #pragma once
 #include "Framework/Actor.h"
+#include "Framework/PhysicsComponent.h"
+namespace meow {
+	class HealthPad : public meow::Actor
+	{
+	public:
+		CLASS_DECLARATION(HealthPad)
 
-class HealthPad : public meow::Actor
-{
-public:
-	HealthPad(float HPAmount, const meow::Transform& transform) :
-		Actor{ transform},
-		m_HPAmount{ HPAmount}
-	{}
-	void Update(float dt) override;
-	void onCollision(Actor* actor) override;
-	float getHealthAmount() { return m_HPAmount; }
+		void Update(float dt) override;
+		bool Initialize() override;
+		void OnCollisionEnter(Actor* actor) override;
+		float getHealthAmount() { return HPAmount; }
 
-private:
-	float m_HPAmount;
+	private:
+		float HPAmount;
+		meow::PhysicsComponent* m_physicsComponent = nullptr;
+	};
 
-};
+
+}

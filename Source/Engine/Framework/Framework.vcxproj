@@ -148,11 +148,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Box2DCollisionComponent.h" />
+    <ClInclude Include="Box2DPhysicsComponent.h" />
     <ClInclude Include="CircleCollisionComponent.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="EnginePhysicsComponent.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="EventManager.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Game.h" />
@@ -164,17 +168,22 @@
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SpriteAnimComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TextRenderComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Box2DCollisionComponent.cpp" />
+    <ClCompile Include="Box2DPhysicsComponent.cpp" />
     <ClCompile Include="CircleCollisionComponent.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EnginePhysicsComponent.cpp" />
+    <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="ModelRendererComponent.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SpriteAnimComponent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TextRenderComponent.cpp" />
   </ItemGroup>

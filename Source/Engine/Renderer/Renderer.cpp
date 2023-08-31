@@ -3,6 +3,9 @@
 #include "SDL2-2.28.0/include/SDL_Image.h"
 #include "Core/Vector2.h"
 #include "Texture.h"
+#include "Core/MathUtils.h"
+#include "Core/Logger.h"
+#include "Core/MathRect.h"
 
 
 namespace meow
@@ -85,9 +88,23 @@ namespace meow
 		dest.y = (int)(position.y - (size.y * 0.5f));
 		dest.w = (int)size.x;
 		dest.h = (int)size.y;
-
 		//https://wiki.libsdl.org/SDL2/SDL_RenderCopyEx
-		SDL_RenderCopyEx(m_renderer, texture->getTexture(), NULL, &dest, mx.GetRotation(), NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(m_renderer, texture->getTexture(), NULL, &dest, 1.8*RadToDeg(mx.GetRotation()), NULL, SDL_FLIP_NONE);
 		
+	}
+	void Renderer::DrawTexture(Texture* texture, const MathRect& source, const Transform& transform)
+	{
+		mat3 mx = transform.GetMatrix();
+
+		vec2 position = mx.GetTranslation();
+		meow::vec2 size = vec2{source.w,source.h} *mx.GetScale();
+
+		SDL_Rect dest;
+		dest.x = (int)(position.x - (size.x * 0.5f));
+		dest.y = (int)(position.y - (size.y * 0.5f));
+		dest.w = (int)size.x;
+		dest.h = (int)size.y;
+		//https://wiki.libsdl.org/SDL2/SDL_RenderCopyEx
+		SDL_RenderCopyEx(m_renderer, texture->getTexture(),(SDL_Rect*)(&source), &dest, 1.8 * RadToDeg(mx.GetRotation()), NULL, SDL_FLIP_NONE);
 	}
 }

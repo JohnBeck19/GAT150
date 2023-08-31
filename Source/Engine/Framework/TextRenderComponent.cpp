@@ -1,4 +1,5 @@
 #include "TextRenderComponent.h"
+#include "Actor.h"
 
 namespace meow
 {
@@ -8,6 +9,7 @@ namespace meow
 		text = other.text;
 		fontName = other.fontName;
 		fontSize = other.fontSize;
+		color = other.color;
 
 		m_changed = true;
 		m_text = std::make_unique<Text>(*other.m_text.get());
@@ -30,7 +32,7 @@ namespace meow
 			m_text->Create(renderer, text, { 1, 1, 1, 1 });
 		}
 		// draw text
-		m_text->Draw(renderer, { {400,300},2,0 });
+		m_text->Draw(renderer, m_owner->transform);
 	}
 	void TextRenderComponent::SetText(const std::string& string)
 	{
@@ -46,5 +48,6 @@ namespace meow
 		READ_DATA(value,text)
 		READ_DATA(value,fontName)
 		READ_DATA(value,fontSize)
+		READ_DATA(value,color)
 	}
 }

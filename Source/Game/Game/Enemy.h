@@ -1,28 +1,26 @@
 #pragma once
 #include "Framework/Actor.h"
-
-
-class Enemy : public meow::Actor
+#include "Framework/PhysicsComponent.h"
+namespace meow
 {
-public:
-	Enemy(float speed, float turnRate, const meow::Transform& transform) :
-		Actor{ transform},
-		m_speed{ speed },
-		m_turnRate{ turnRate }
+	class Enemy : public Actor
 	{
-		m_fireRate = 2.0f;
-		m_fireTimer = meow::randomf(1.0f,3.0f);
-	}
-	
+	public:
+		CLASS_DECLARATION(Enemy)
 
-	void Update(float dt) override;
-	void onCollision(Actor* other) override;
+		Enemy() = default;
+		bool Initialize() override;
+		void OnDestroy() override;
+		void Update(float dt) override;
 
+		void OnCollisionEnter(Actor* other) override;
 
-private:
-	float m_speed = 0;
-	float m_turnRate = 0;
-
-	float m_fireRate = 0;
-	float m_fireTimer = 0;
-};
+	public:
+		float speed = 0;
+		float turnRate = 0;
+		float fireRate = 0;
+		float fireTimer = 0;
+		bool enemyUpgrade = false;
+		PhysicsComponent* m_physicsComponent = nullptr;
+	};
+}

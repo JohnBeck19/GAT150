@@ -6,66 +6,122 @@
 #include "Bullet.h"
 #include "Framework/Emitter.h"
 #include "Renderer/ModelManager.h"
-#include "Framework/SpriteComponent.h"
+#include "Framework/Framework.h"
+namespace meow {
 
-void Enemy::Update(float dt)
-{
+	CLASS_DEFINITION(Enemy)
 
-	Actor::Update(dt);
-	meow::Vector2 forward = meow::vec2{ 0,-1 }.Rotate(transform.rotation);
-	Player* player = m_scene->GetActor<Player>();
-	if (player) {
-		meow::Vector2 direction = player->transform.position - transform.position;
 
-		float turnAngle = meow::vec2::SignedAngle(forward, direction.Normalized());
 
-		transform.rotation += turnAngle * dt;
-
-		if (std::fabs(turnAngle) < meow::DegToRad(30.0f)) 
+	bool Enemy::Initialize()
+	{
+		Actor::Initialize();
+		m_physicsComponent = GetComponent<PhysicsComponent>(); 
+		auto collisionComponent = GetComponent<CollisionComponent>();
+		if (collisionComponent)
 		{
-			if (m_fireTimer <= 0) {
-				meow::Transform tform{ transform.position,transform.rotation,1 };
-
-				std::unique_ptr<Bullet> bullet = std::make_unique<Bullet>(400.0f, tform);
-				bullet->tag = "Enemy";
-				std::unique_ptr<meow::SpriteComponent> component = std::make_unique<meow::SpriteComponent>();
-				component->m_texture = GET_RESOURCE(meow::Texture,"Rocket.png", meow::g_renderer);
-				bullet->AddComponent(std::move(component));
-				m_scene->Add(std::move(bullet));
-				m_fireTimer = m_fireRate;
+			auto renderComponent = GetComponent<meow::RenderComponent>();
+			if (renderComponent)
+			{
+				float scale = transform.scale;
+				collisionComponent->m_radius = renderComponent->GetRadius() * scale;
 			}
 		}
-		m_fireTimer -= dt;
+		
+		return true;
+	}
+	void Enemy::OnDestroy()
+	{
+		Actor::OnDestroy();
+	}
+	void Enemy::Read(const json_t& value)
+	{
+		Actor::Read(value);
+		READ_DATA(value, speed);
+		READ_DATA(value, turnRate);
+		READ_DATA(value, fireRate);
+	}
+
+	void Enemy::Update(float dt)
+	{
+
+		Actor::Update(dt);
+		meow::Vector2 forward = meow::vec2{ 0,-1 }.Rotate(transform.rotation);
+		Player* player = m_scene->GetActor<Player>();
+		if (player) {
+			meow::Vector2 direction = player->transform.position - transform.position;
+
+			float turnAngle = meow::vec2::SignedAngle(forward, direction.Normalized());
+
+			//transform.rotation += turnAngle * dt;
+			m_physicsComponent->ApplyTorque(turnAngle * turnRate);
+
+			m_physicsComponent->ApplyForce(forward * speed);
+
+			//transform.position += forward * speed * 1 * dt;
+			transform.position.x = meow::Wrap(transform.position.x, (float)meow::g_renderer.GetWidth());
+			transform.position.y = meow::Wrap(transform.position.y, (float)meow::g_renderer.GetHeight());
+
+
+			if (std::fabs(turnAngle) < meow::DegToRad(30.0f))
+			{
+     				if (fireTimer <= 0) {
+
+					auto bullet = INSTANTIATE(Bullet, "EnemyBullet");
+					bullet->transform = { transform.position,transform.rotation,3.0f };
+					bullet->Initialize();
+					m_scene->Add(std::move(bullet));
+
+					if (enemyUpgrade)
+					{
+						vec2 shipForward(std::cos(transform.rotation), std::sin(transform.rotation));
+						
+						auto bullet = INSTANTIATE(Bullet, "EnemyBullet");
+						bullet->transform = { transform.position + shipForward * 30,transform.rotation,3.0f };
+						bullet->Initialize();
+						m_scene->Add(std::move(bullet));
+						auto bullet2 = INSTANTIATE(Bullet, "EnemyBullet");
+						bullet2->transform = { transform.position + shipForward * 30,transform.rotation,3.0f };
+						bullet2->Initialize();
+						m_scene->Add(std::move(bullet2));
+
+					}
+					fireTimer = fireRate;
+				}
+			}
+			fireTimer -= dt;
+
+		}
 
 	}
 
-	
-	transform.position += forward * m_speed * 1 * dt;
-	transform.position.x = meow::Wrap(transform.position.x, (float)meow::g_renderer.GetWidth());
-	transform.position.y = meow::Wrap(transform.position.y, (float)meow::g_renderer.GetHeight());
-	
-}
+	void Enemy::OnCollisionEnter(Actor* other)
+	{
+		if (other->tag != tag && other->name == "Bullet")
+		{
+			destroyed = true;
+			m_game->AddPoints(100);
+			m_scene->GetActorByName("Score")->GetComponent<meow::TextRenderComponent>()->SetText("SCORE: " + std::to_string((m_game->GetScore())));
+			
 
-void Enemy::onCollision(Actor* other)
-{
-	if (other->tag != tag && other->id == "bullet") {
-		m_destroyed = true;
-		m_game->AddPoints(1);
 
-		meow::EmitterData pInfo;
-		pInfo.burst = true;
-		pInfo.burstCount = 30;
-		pInfo.spawnRate = 300;
-		pInfo.angle = 0;
-		pInfo.angleRange = meow::Pi;
-		pInfo.lifetimeMin = 0.5f;
-		pInfo.lifetimeMax = 1.0f;
-		pInfo.speedMin = 50;
-		pInfo.speedMax = 100;
-		pInfo.damping = 0.25f;
-		pInfo.color = meow::Color{ 0,1,1,1 };
-		auto emitter = std::make_unique<meow::Emitter>(transform, pInfo);
-		emitter->lifespan = 0.5f;
-		m_scene->Add(std::move(emitter));
+			meow::EmitterData pInfo;
+			pInfo.burst = true;
+			pInfo.burstCount = 30;
+			pInfo.spawnRate = 300;
+			pInfo.angle = 0;
+			pInfo.angleRange = meow::Pi;
+			pInfo.lifetimeMin = 0.5f;
+			pInfo.lifetimeMax = 1.0f;
+			pInfo.speedMin = 50;
+			pInfo.speedMax = 100;
+			pInfo.damping = 0.25f;
+			pInfo.color = meow::Color{ 0,1,1,1 };
+			auto emitter = std::make_unique<meow::Emitter>(transform, pInfo);
+			emitter->lifespan = 0.5f;
+			m_scene->Add(std::move(emitter));
+		}
 	}
+
 }
+

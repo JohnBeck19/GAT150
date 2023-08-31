@@ -11,11 +11,16 @@ meow::Actor::Actor(const Actor& other)
 	transform = other.transform;
 	m_scene = other.m_scene;
 	m_game = other.m_game;
+	
+	for (auto& component : other.components) {
+		auto cloneComponent = std::unique_ptr<Component>((Component*)component->Clone().release());
+		AddComponent(std::move(cloneComponent));
+	}
 }
 
 bool meow::Actor::Initialize()
 {
-	for (auto& component : m_components)
+	for (auto& component : components)
 	{
 		component->Initialize();
 	}
@@ -25,7 +30,7 @@ bool meow::Actor::Initialize()
 
 void meow::Actor::OnDestroy()
 {
-	for (auto& component : m_components)
+	for (auto& component : components)
 	{
 		component->OnDestroy();
 	}
@@ -35,11 +40,11 @@ void meow::Actor::Update(float dt)
 {
 	if (lifespan != -1.0f) {
 		lifespan -= dt;
-		m_destroyed = (lifespan <= 0);
+		destroyed = (lifespan <= 0);
 		
 	}
 
-	for (auto& component : m_components)
+	for (auto& component : components)
 	{
 		component->Update(dt);
 	}
@@ -48,7 +53,7 @@ void meow::Actor::Update(float dt)
 void meow::Actor::Draw(meow::Renderer& renderer)
 {
 	
-	for (auto& component : m_components) {
+	for (auto& component : components) {
 		RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component.get());
 		if (renderComponent)
 		{
@@ -61,7 +66,7 @@ void meow::Actor::Draw(meow::Renderer& renderer)
 void meow::Actor::AddComponent(std::unique_ptr<meow::Component> component)
 {
 	component->m_owner = this;
-	m_components.push_back(std::move(component));
+	components.push_back(std::move(component));
 }
 
 void meow::Actor::Read(const json_t& value)
@@ -73,7 +78,7 @@ void meow::Actor::Read(const json_t& value)
 	READ_DATA(value, persistent);
 	READ_DATA(value, prototype);
 
-	if (HAS_DATA(value, transform)) transform.Read(GET_DATA(value,transform));
+	if (HAS_DATA(value, transform)) transform.Read(GET_DATA(value, transform));
 
 	if (HAS_DATA(value, components) && GET_DATA(value, components).IsArray()) {
 		for (auto& componentValue : GET_DATA(value, components).GetArray())

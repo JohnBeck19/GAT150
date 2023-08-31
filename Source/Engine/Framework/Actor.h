@@ -13,6 +13,9 @@ namespace meow {
 
 		Actor() = default;
 		Actor(const Actor& other);
+		virtual ~Actor() {
+			OnDestroy();
+		}
 		Actor(const Transform& transform) :
 			transform{ transform }
 		{}
@@ -29,9 +32,9 @@ namespace meow {
 
 		void AddComponent(std::unique_ptr<Component> component);
 
-		virtual void onCollision(Actor* other) {};
+		virtual void OnCollisionEnter(Actor* other) {};
+		virtual void OnCollisionExit(Actor* other) {};
 
-		float GetRadius() { return 30.0f; }
 
 
 
@@ -39,18 +42,17 @@ namespace meow {
 		friend class Scene;
 		Transform transform;
 		std::string tag;
-		std::string id;
 		float lifespan = -1.0f;
 		bool persistent = false; 
 		bool prototype = false;
 		friend class Game;
 		class Game* m_game = nullptr;
-
+		bool destroyed = false;
 		
 	protected:
 
-		std::vector <std::unique_ptr<Component>> m_components;
-		bool m_destroyed = false;
+		std::vector <std::unique_ptr<Component>> components;
+		
 
 
 	};
@@ -58,7 +60,7 @@ namespace meow {
 	template<typename T>
 	inline T* Actor::GetComponent() {
 		
-		for (auto& component : m_components) {
+		for (auto& component : components) {
 			T* result = dynamic_cast<T*>(component.get());
 			if (result) return result;
 		}

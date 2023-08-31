@@ -45,8 +45,6 @@ int main(int argc, char* argv[])
 	meow::PhysicsSystem::Instance().Initialize();
 
 
-
-
 	//renderer initilization 
 	
 	meow::g_renderer.Initialize();
@@ -100,4 +98,3 @@ int main(int argc, char* argv[])
 	}
 	return 0;
 }
-

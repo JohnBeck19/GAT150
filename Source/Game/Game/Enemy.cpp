@@ -67,21 +67,24 @@ namespace meow {
 			{
      				if (fireTimer <= 0) {
 
-					auto bullet = INSTANTIATE(Bullet, "EnemyBullet");
-					bullet->transform = { transform.position,transform.rotation,3.0f };
+					auto bullet = INSTANTIATE(Bullet, "EnemyLaser");
+					bullet->transform = { transform.position,transform.rotation,4.0f };
 					bullet->Initialize();
+					bullet->tag = "Enemy";
 					m_scene->Add(std::move(bullet));
 
 					if (enemyUpgrade)
 					{
 						vec2 shipForward(std::cos(transform.rotation), std::sin(transform.rotation));
 						
-						auto bullet = INSTANTIATE(Bullet, "EnemyBullet");
-						bullet->transform = { transform.position + shipForward * 30,transform.rotation,3.0f };
-						bullet->Initialize();
-						m_scene->Add(std::move(bullet));
-						auto bullet2 = INSTANTIATE(Bullet, "EnemyBullet");
-						bullet2->transform = { transform.position + shipForward * 30,transform.rotation,3.0f };
+						auto bullet1 = INSTANTIATE(Bullet, "EnemyLaser");
+						bullet1->transform = { transform.position + shipForward * 30,transform.rotation,4.0f };
+						bullet1->Initialize();
+						bullet1->tag = "Enemy";
+						m_scene->Add(std::move(bullet1));
+						auto bullet2 = INSTANTIATE(Bullet, "EnemyLaser");
+						bullet2->tag = "Enemy";
+						bullet2->transform = { transform.position + shipForward * 30,transform.rotation,4.0f };
 						bullet2->Initialize();
 						m_scene->Add(std::move(bullet2));
 
@@ -97,7 +100,7 @@ namespace meow {
 
 	void Enemy::OnCollisionEnter(Actor* other)
 	{
-		if (other->tag != tag && other->name == "Bullet")
+		if (other->tag != tag && other->name == "PlayerRocket")
 		{
 			destroyed = true;
 			m_game->AddPoints(100);
@@ -116,7 +119,7 @@ namespace meow {
 			pInfo.speedMin = 50;
 			pInfo.speedMax = 100;
 			pInfo.damping = 0.25f;
-			pInfo.color = meow::Color{ 0,1,1,1 };
+			pInfo.color = meow::Color{ 1,0,1,1 };
 			auto emitter = std::make_unique<meow::Emitter>(transform, pInfo);
 			emitter->lifespan = 0.5f;
 			m_scene->Add(std::move(emitter));

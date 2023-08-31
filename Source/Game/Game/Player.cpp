@@ -72,10 +72,15 @@ namespace meow {
 
 		m_physicsComponent->ApplyForce(forward * speed * thrust);
 
-		///FIX WRAPPING
-		//transform.position.x = meow::Wrap(transform.position.x, (float)meow::g_renderer.GetWidth());
-		//transform.position.y = meow::Wrap(transform.position.y, (float)meow::g_renderer.GetHeight());
+		// check if position is off screen, if so wrap the position and set physics component to new position
+		if ((transform.position.x < 0 || transform.position.x >(float)meow::g_renderer.GetWidth()) ||
+			(transform.position.y < 0 || transform.position.y >(float)meow::g_renderer.GetHeight()))
+		{
+			transform.position.x = meow::Wrap(transform.position.x, (float)meow::g_renderer.GetWidth());
+			transform.position.y = meow::Wrap(transform.position.y, (float)meow::g_renderer.GetHeight());
 
+			m_physicsComponent->SetPosition(transform.position);
+		}
 
 		int score = m_game->GetScore();
 		//fire
@@ -96,9 +101,11 @@ namespace meow {
 				}
 
 				meow::g_audioSystem.PlayOneShot("RocketBlast");
-				auto bullet = INSTANTIATE(Bullet, "Bullet");
+
+				auto bullet = INSTANTIATE(Bullet, "PlayerRocket");
 				bullet->transform = { transform.position + forward * 30,transform.rotation,1.0f };
 				bullet->Initialize();
+				bullet->tag = "Player";
 				m_scene->Add(std::move(bullet));
 
 				if (score >= 100) {
@@ -142,8 +149,7 @@ namespace meow {
 					//creates the bullets
 					for (int i = 0; i < 20; i++)
 					{																			//adding the m_burst for slight rotation offset
-
-						auto super = INSTANTIATE(Bullet, "Bullet");
+						auto super = INSTANTIATE(Bullet, "PlayerRocket");
 						super->transform = { transform.position,transform.rotation + meow::DegToRad((float)i * 18 + (superburst * 5)),1.0f };
 						super->Initialize();
 						m_scene->Add(std::move(super));
@@ -159,13 +165,10 @@ namespace meow {
 
 	void Player::OnCollisionEnter(Actor* other)
 	{
-		if (other->tag != tag && other->name == "Bullet") {
-			other->destroyed = true;
+		if (other->tag != tag && other->name == "EnemyLaser") {
 			health -= 1;
 			//dynamic_cast<SpaceGame*>(m_game)->m_HealthText->Create(meow::g_renderer, "HEALTH: " + std::to_string(this->getHP()), meow::Color{ 1, 1, 1, 1 });
 			meow::g_audioSystem.PlayOneShot("Explosion");
-
-
 
 			meow::EmitterData pInfo;
 			pInfo.burst = true;
@@ -202,12 +205,12 @@ namespace meow {
 	void Player::CreateBulletScaling(float offset)
 	{
 		vec2 shipForward(std::cos(transform.rotation), std::sin(transform.rotation));
-		auto bullet = INSTANTIATE(Bullet, "Bullet");
+		auto bullet = INSTANTIATE(Bullet, "PlayerRocket");
 		bullet->transform = { transform.position + shipForward * offset,transform.rotation,1.0f };
 		bullet->Initialize();
 		m_scene->Add(std::move(bullet));
 
-		auto bullet2 = INSTANTIATE(Bullet, "Bullet");
+		auto bullet2 = INSTANTIATE(Bullet, "PlayerRocket");
 		bullet2->transform = { transform.position - shipForward * offset,transform.rotation,1.0f };
 		bullet2->Initialize();
 		m_scene->Add(std::move(bullet2));

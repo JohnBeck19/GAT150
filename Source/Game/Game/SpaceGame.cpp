@@ -72,6 +72,7 @@ void SpaceGame::Update(float dt)
 		m_scene->GetActorByName("LivesSprite2")->active = true;
 		m_scene->GetActorByName("LivesSprite3")->active = true;
 		m_scene->GetActorByName("EndScreen")->active = false;
+		m_scene->GetActorByName("Score")->GetComponent<meow::TextRenderComponent>()->text = "Score: " + std::to_string((m_score));
 	//	m_LivesText->Create(meow::g_renderer, "LIVES: " + std::to_string(m_lives), meow::Color{ 1, 1, 1, 1 });
 		break;
 	case SpaceGame::eState::StartLevel:
@@ -130,7 +131,10 @@ void SpaceGame::Update(float dt)
 		m_stateTimer = 3;
 		
 
-		if (m_lives <= 0) m_state = eState::GameOver;
+		if (m_lives <= 0) {
+			meow::g_audioSystem.PlayOneShot("GameOver");
+			m_state = eState::GameOver;
+		}
 		else m_state = eState::PlayerDead;
 		break;
 	case SpaceGame::eState::PlayerDead:
@@ -142,7 +146,7 @@ void SpaceGame::Update(float dt)
 		break;
 	case SpaceGame::eState::GameOver:
 		m_stateTimer -= dt;
-		meow::g_audioSystem.PlayOneShot("GameOver");
+
 		if (m_stateTimer <= 0) {
 			if (meow::g_inputSystem.GetMouseButtonDown(0) && !meow::g_inputSystem.GetMousePreviousButtonDown(0)) {
 				m_state = eState::Title;
@@ -168,7 +172,10 @@ void SpaceGame::Draw(meow::Renderer& renderer)
 		m_scene->GetActorByName("EndScreen")->active = true;
 		m_scene->GetActorByName("Score")->active = false;
 		m_scene->GetActorByName("Health")->active = false;
-		m_scene->GetActorByName("Enemy")->active = false;
+		if (m_scene->GetActorByName("Enemy")) {
+			m_scene->GetActorByName("Enemy")->active = false;
+		}
+		
 	}
 	
 
